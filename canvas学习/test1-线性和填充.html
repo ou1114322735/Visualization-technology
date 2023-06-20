@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas width="1000" height="500" style="border: 2px solid gray">
+        当前浏览器不支持canvas元素，请升级或更换浏览器！
+    </canvas>
+    <script>
+        const canvas = document.querySelector('canvas');
+        //两种写法：const ctx = canvas.CanvasRenderingContext2D();
+        const ctx = canvas.getContext('2d'); // 2d绘图环境
+        
+        // 直线绘制三角形
+        ctx.moveTo(100, 100); // 起点
+        ctx.lineTo(200, 100); // 第二个点
+        ctx.lineTo(150, 150); // 第三个点
+        ctx.lineTo(100, 100); // 回到起点
+        ctx.stroke(); // 绘制
+
+        // 绘制矩形
+        ctx.strokeRect(300, 100, 100, 100); // 绘制矩形边框
+        ctx.fillRect(450, 100, 100, 100); // 绘制矩形填充
+        ctx.clearRect(500, 150, 50, 50); // 清除矩形区域
+    </script>
+</body>
+</html>

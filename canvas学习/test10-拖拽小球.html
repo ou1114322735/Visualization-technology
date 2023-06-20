@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas width="500" height="500" style="border: 2px solid gray">
+        当前浏览器不支持canvas元素，请升级或更换浏览器！
+    </canvas>
+    <script>
+        const canvas = document.querySelector('canvas');
+        //两种写法：const ctx = canvas.CanvasRenderingContext2D();
+        const ctx = canvas.getContext('2d'); // 2d绘图环境
+
+        const ballConf = {
+            x: 0,
+            y: 0,
+            r: 20,
+            color: 'red',
+            offsetX: 0,
+            offsetY: 0,
+            isDrag: false,
+            speedX: 500,
+            speedY: 500,
+            weaken: 0.98
+        }
+        const width = canvas.width
+        const height = canvas.height
+        let animationId;
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            //设置边界
+            applyPhysics();
+            //直接绘制
+            drawBall();
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ballConf.x, ballConf.y, ballConf.r, 0, Math.PI * 2);
+            ctx.fillStyle = ballConf.color;
+            ctx.fill();
+        }
+
+        function applyPhysics() {
+            ballConf.x += ballConf.speedX;
+            ballConf.y += ballConf.speedY;
+            ballConf.speedX *= ballConf.weaken;
+            ballConf.speedY *= ballConf.weaken;
+            if (ballConf.x < ballConf.r) {
+                ballConf.x = ballConf.r;
+                ballConf.speedX *= -1;
+            } else if (ballConf.x > width - ballConf.r) {
+                ballConf.x = width - ballConf.r;
+                ballConf.speedX *= -1;
+            }
+
+            if (ballConf.y < ballConf.r) {
+                ballConf.y = ballConf.r;
+                ballConf.speedY *= -1;
+            } else if (ballConf.y > height - ballConf.r) {
+                ballConf.y = height - ballConf.r;
+                ballConf.speedY *= -1;
+            }
+
+            if (Math.min(+ballConf.speedX, +ballConf.speedY) < 0.1) {
+                window.cancelAnimationFrame(animationId);
+                ballConf.speedX = 500;
+                ballConf.speddY = 500;
+                ballConf.weaken = 0.98;
+            }
+        }
+        draw();
+        canvas.addEventListener('mousedown', (e) => {
+            //鼠标在画布中的位置
+            const mouseX = e.clientX - canvas.offsetLeft;
+            const mouseY = e.clientY - canvas.offsetTop;
+            if (Math.pow(mouseX - ballConf.x, 2) + Math.pow(mouseY - ballConf.y, 2) < Math.pow(ballConf.r, 2)) {
+                ballConf.isDrag = true;
+                //记录鼠标和小球的偏移量
+                ballConf.offsetX = mouseX - ballConf.x;
+                ballConf.offsetY = mouseY - ballConf.y;
+            }
+            canvas.addEventListener('mousemove', mouseMove);
+            canvas.addEventListener('mouseup', mouseUp)
+        })
+        function mouseMove(e) {
+            const mouseX = e.clientX - canvas.offsetLeft;
+            const mouseY = e.clientY - canvas.offsetTop;
+            if (ballConf.isDrag) {
+                ballConf.x = mouseX - ballConf.offsetX;
+                ballConf.y = mouseY - ballConf.offsetY;
+                draw();
+            }
+        }
+
+        function mouseUp() {
+            canvas.removeEventListener('mousemove', mouseMove);
+            canvas.removeEventListener('mouseup', mouseUp);
+            ballConf.isDrag = false;
+            run();
+        }
+
+        function run() {
+            ballConf.x += ballConf.speedX;
+            ballConf.y += ballConf.speedY;
+            ballConf.speedX *= ballConf.weaken;
+            ballConf.speedY *= ballConf.weaken;
+            if (Math.abs(Math.min(+ballConf.offsetX, +ballConf.speedY)) < 0.1) {
+                ballConf.speed = 0;
+                window.cancelAnimationFrame(run);
+                ballConf.speedX = 500;
+                ballConf.speedY = 500;
+                ballConf.weaken = 0.98;
+                return;
+            }
+            if (ballConf.x < ballConf.r || ballConf.x > width - ballConf.r) {
+                ballConf.speedX *= -1;
+            }
+            if (ballConf.y < ballConf.r || ballConf.y > height - ballConf.r) {
+                ballConf.speedY *= -1;
+            }
+
+            draw();
+            animationId = window.requestAnimationFrame(run);
+        }
+    </script>
+</body>
+
+</html>

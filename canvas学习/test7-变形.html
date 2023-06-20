@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas width="1000" height="500" style="border: 2px solid gray">
+        当前浏览器不支持canvas元素，请升级或更换浏览器！
+    </canvas>
+    <script>
+        const canvas = document.querySelector('canvas');
+        //两种写法：const ctx = canvas.CanvasRenderingContext2D();
+        const ctx = canvas.getContext('2d'); // 2d绘图环境
+
+
+        // 状态的保存和恢复：save() 和 restore() 方法是用来保存和恢复 canvas 状态的，方法不需要参数。可以理解为就是对canvas 状态的快照进行保存和恢复。
+        ctx.fillStyle = "#cccccc";
+        ctx.fillRect(10, 10, 300, 100);
+        ctx.save(); // 保存状态
+        ctx.fillStyle = "#ee7034";
+        ctx.fillRect(10, 150, 300, 100);
+        ctx.restore(); // 还原到上次保存的状态
+        ctx.fillRect(10, 300, 300, 100);
+
+
+        /**
+         * 移动、旋转和缩放
+         * 移动：translate(x, y) ，x 是左右偏移量，y 是上下偏移量。
+         * 旋转：rotate(angle)，angle是旋转的角度，它是顺时针旋转，以弧度为单位的值。
+         * 缩放：scale(x, y)，x 为水平缩放的值，y 为垂直缩放得值。x和y的值小于1则为缩小，大于1则为放大。默认值为 1。
+         * 
+         * 
+         * 
+         */
+        ctx.fillStyle = '#ee7034';
+        ctx.save();
+        ctx.save();
+        ctx.translate(100, 100); // x和y轴都移动了100
+        ctx.fillRect(0, 0, 100, 100);
+        ctx.restore();
+        ctx.rotate(Math.PI / 4); // 旋转了45度，Math.PI=180度
+        ctx.fillRect(0, 0, 100, 100);
+        ctx.restore();
+        ctx.scale(2, 1);
+        ctx.fillRect(100, 300, 100, 100);
+
+
+    </script>
+</body>
+
+</html>

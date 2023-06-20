@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas Ball Drag and Drop</title>
+  <style>
+    canvas {
+      border: 1px solid black;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="800" height="400"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const ballRadius = 20;
+    let ballX = canvas.width / 2; //小球的初始位置
+    let ballY = canvas.height / 2; //小球的初始位置
+    let ballSpeedX = 0;
+    let ballSpeedY = 0;
+    let isDragging = false;
+    //鼠标相对于小球的偏移量
+    let dragOffsetX = 0;
+    let dragOffsetY = 0;
+
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(ballX, ballY, ballRadius, 0, Math.PI*2);
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    function applyDrag() {
+      if (isDragging) {
+        ballSpeedX = (mouseX - canvas.offsetLeft - ballX - dragOffsetX) / 10;
+        ballSpeedY = (mouseY - canvas.offsetTop - ballY - dragOffsetY) / 10;
+      }
+    }
+
+    function applyPhysics() {
+      if (!isDragging) {
+        ballX += ballSpeedX;
+        ballY += ballSpeedY;
+
+        if (ballX + ballRadius > canvas.width || ballX - ballRadius < 0) {
+          ballSpeedX *= -0.8;
+          if (ballX + ballRadius > canvas.width) {
+            ballX = canvas.width - ballRadius;
+          } else {
+            ballX = ballRadius;
+          }
+        }
+
+        if (ballY + ballRadius > canvas.height || ballY - ballRadius < 0) {
+          ballSpeedY *= -0.8;
+          if (ballY + ballRadius > canvas.height) {
+            ballY = canvas.height - ballRadius;
+          } else {
+            ballY = ballRadius;
+          }
+        }
+
+        if (Math.abs(ballSpeedX) < 0.1) {
+          ballSpeedX = 0;
+        } else {
+          ballSpeedX *= 0.99;
+        }
+
+        if (Math.abs(ballSpeedY) < 0.1) {
+          ballSpeedY = 0;
+        } else {
+          ballSpeedY *= 0.99;
+        }
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBall();
+      applyDrag();
+      applyPhysics();
+      requestAnimationFrame(draw);
+    }
+
+    let mouseX, mouseY;
+
+    canvas.addEventListener('mousedown', function(event) {
+      isDragging = true;
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+      dragOffsetX = mouseX - canvas.offsetLeft - ballX;
+      dragOffsetY = mouseY - canvas.offsetTop - ballY;
+    });
+
+    canvas.addEventListener('mousemove', function(event) {
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+    });
+
+    canvas.addEventListener('mouseup', function(event) {
+      isDragging = false;
+    });
+
+    draw();
+  </script>
+</body>
+</html>

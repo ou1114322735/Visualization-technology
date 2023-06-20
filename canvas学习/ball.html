@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Canvas小球平抛运动</title>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas" width="1500" height="400"></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // 定义小球的初始位置、速度和加速度
+      let x = 10;
+      let y = 10;
+      let vx = 1.2;
+      let vy = 0;
+      const ay = 0.5;
+
+      // 绘制小球的函数
+      function drawBall() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+
+      // 更新小球位置的函数
+      function updateBall() {
+        x += vx;
+        y += vy;
+        vy += ay;
+
+        // 判断小球是否碰到底部
+        if (y > canvas.height - 10) {
+          y = canvas.height - 10;
+          vy = -vy * 0.8; // 弹跳回来，并且速度减小
+          vx *= 0.95; // 摩擦力使速度减小
+        }
+
+        // 如果速度太小就停止动画
+        if (Math.abs(vx) < 0.5 || Math.abs(vy) < 0.5) {
+          cancelAnimationFrame(animationId);
+        }
+      }
+
+      // 动画循环函数
+      function animate() {
+        drawBall();
+        updateBall();
+        animationId = requestAnimationFrame(animate);
+      }
+
+      // 启动动画
+      let animationId = requestAnimationFrame(animate);
+animate();
+    </script>
+  </body>
+</html>

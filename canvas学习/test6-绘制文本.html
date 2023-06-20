@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas width="1000" height="500" style="border: 2px solid gray">
+        当前浏览器不支持canvas元素，请升级或更换浏览器！
+    </canvas>
+    <script>
+        const canvas = document.querySelector('canvas');
+        //两种写法：const ctx = canvas.CanvasRenderingContext2D();
+        const ctx = canvas.getContext('2d'); // 2d绘图环境
+
+
+        //canvas 中依旧提供了两种方法来渲染文本，一种是描边一种是填充。
+
+        /**
+         * strokeText（描边）,语法：ctx.strokeText(text, x, y, maxWidth)参数分别为：
+         * text：绘制的文案
+         * x、y：文本的起始位置
+         * maxWidth：可选参数，最大宽度。需要注意的是当文案大于最大宽度时不是裁剪或者换行，而是缩小字体。
+         */
+        // ctx.font = "50px serif"; // 设置文案大小和字体
+        // ctx.strokeText("Canvas 详解", 50, 50); // 描边文案
+        
+
+        /**
+         * fillText（填充），语法：ctx.fillText(text, x, y, maxWidth)参数分别为：
+         * text：绘制的文案
+         * x、y：文本的起始位置
+         * maxWidth：可选参数，最大宽度。需要注意的是当文案大于最大宽度时不是裁剪或者换行，而是缩小字体。
+         */
+    //      ctx.font = "50px serif"; // 设置文案大小和字体
+    //   ctx.fillText("Canvas 详解", 50, 50);
+
+    
+        /**
+        * font:
+        * 用于绘制文本的样式。默认的字体是 10px sans-serif。
+        * textAlign:
+        * 文本对齐的方式。可选值为：left、right、center、start和end。默认值是 start。
+        */
+       
+    </script>
+</body>
+
+</html>

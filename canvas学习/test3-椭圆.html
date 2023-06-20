@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas width="1000" height="500" style="border: 2px solid gray">
+        当前浏览器不支持canvas元素，请升级或更换浏览器！
+    </canvas>
+    <script>
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+
+
+
+        /**
+         * ellipse(x, y, radiusX, radiusY, rotation, startAngle, endAngle, anticlockwise)
+
+            x、y：椭圆的圆心位置
+            radiusX、radiusY：x轴和y轴的半径
+            rotation：椭圆的旋转角度，以弧度表示
+            startAngle：开始绘制点
+            endAngle：结束绘制点
+            anticlockwise：绘制的方向（默认顺时针），可选参数。
+         * 
+        */
+
+        ctx.beginPath();
+        ctx.ellipse(100, 150, 50, 100, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(400, 150, 50, 100, 0, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(250, 350, 50, 100, Math.PI / 2, 0, 2 * Math.PI); // 旋转90°
+        ctx.fill();
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas width="1000" height="500" style="border: 2px solid gray">
+        当前浏览器不支持canvas元素，请升级或更换浏览器！
+    </canvas>
+    <script>
+        const canvas = document.querySelector('canvas');
+        const ctx = canvas.getContext('2d');
+
+
+
+        /**
+         * 
+         * 语法：quadraticCurveTo(cp1x, cp1y, x, y)，其中cp1x和cp1y为一个控制点，x和y为结束点。
+         * 调试工具：http://blogs.sitepointstatic.com/examples/tech/canvas-curves/quadratic-curve.html
+         * http://blogs.sitepointstatic.com/examples/tech/canvas-curves/bezier-curve.html
+         */
+
+        // 绘制一段二次贝塞尔曲线
+      ctx.beginPath() // 开启路径
+      ctx.moveTo(50, 50);
+      ctx.quadraticCurveTo(200, 200, 350, 50);
+      // 绘制
+      ctx.stroke();
+      // 绘制一段二次贝塞尔曲线
+      ctx.beginPath() // 开启路径
+      ctx.moveTo(50, 250);
+      ctx.quadraticCurveTo(100, 400, 350, 250);
+      // 绘制
+      ctx.stroke();
+
+      // 绘制一段三次贝塞尔曲线
+      ctx.beginPath() // 开启路径
+      ctx.moveTo(50, 200);
+      ctx.bezierCurveTo(150, 50, 250, 350, 350, 200);
+      // 绘制
+      ctx.stroke();
+    </script>
+</body>
+
+</html>
