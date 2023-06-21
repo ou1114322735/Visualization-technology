@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+    <style>
+        html, body {
+            overflow: hidden;
+        }
+        #canvas {
+            background-color: #ccc;
+        }
+    </style>
+<body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+    <script>
+        // 获取canvas元素和上下文
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        // 加载底图和刮开的图
+        const image = new Image();
+        image.src = "./image/test1.jpeg";
+        const scratchImage = new Image();
+        scratchImage.src = "./image/test6.jpeg";
+
+        // 等待图片加载完成
+        image.onload = function () {
+            // 设置canvas大小和底图
+            ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        };
+
+        scratchImage.onload = function () {
+            canvas.style.background = `url(${scratchImage.src}) 100% 100% no-repeat`;
+        };
+
+        canvas.addEventListener('mousedown', handleDown);
+        canvas.addEventListener('touchstart', handleDown);
+        canvas.addEventListener('mouseup', handleUp);
+        canvas.addEventListener('touchend', handleUp);
+        function handleDown() {
+            canvas.addEventListener("mousemove", handleMove);
+            canvas.addEventListener("touchmove", handleMove);
+        }
+
+        function handleMove(event) {
+            event.preventDefault();
+            // 获取鼠标或触摸位置
+            const x = event.clientX || event.touches[0].clientX;
+            const y = event.clientY || event.touches[0].clientY;
+
+            // 刮开一个圆形区域
+            ctx.globalCompositeOperation = "destination-out";
+            ctx.beginPath();
+            ctx.arc(x, y, 20, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.closePath();
+
+            // 显示刮开的图
+            // ctx.globalCompositeOperation = "source-over";
+            // ctx.drawImage(scratchImage, 0, 0, canvas.width, canvas.height);
+        }
+        function handleUp() {
+            canvas.removeEventListener("mousemove", handleMove);
+            canvas.removeEventListener("touchmove", handleMove);
+        }
+    </script>
+</body>
+
+</html>
