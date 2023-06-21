@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body,
+    html {
+        margin: 0;
+        padding: 50px 0 0 50px;
+    }
+
+    #canvas {
+        border: 1px solid #ccc;
+        border-radius: 20px;
+        box-shadow: 3px 3px 5px #ccc;
+        margin: auto;
+    }
+
+    .bottom-area {
+        margin-top: 30px;
+        border-radius: 20px;
+        box-shadow: 3px 3px 5px #ccc;
+        width: 1000px;
+        background-color: rgb(251, 252, 254);
+        height: 100px;
+        padding-left: 50px;
+        box-sizing: border-box;
+    }
+
+    .color {
+        top: 80px;
+        right: 300px;
+        width: 300px;
+        height: 30px;
+        border-radius: 5px;
+        line-height: 30px;
+        margin-top: 20px;
+        box-sizing: border-box;
+        padding-left: 10px;
+    }
+</style>
+
+<body>
+    <canvas id="canvas" width="1000px" height="600px"></canvas>
+    <div class="bottom-area">
+        <input type="file" id="fileInput">
+        <div class="color"></div>
+    </div>
+
+    </div>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const div = document.querySelector('.color');
+        const fileInput = document.getElementById('fileInput');
+        const curRGB = {
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0
+        }
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        const img = new Image();
+        img.src = './image/test6.jpeg';
+        img.onload = function () {
+            const ratio = img.width / img.height;
+            const w = img.width
+            const h = img.height * ratio;
+            ctx.drawImage(img, 0, 0, w, h);
+        };
+        canvas.addEventListener('mousemove', function (e) {
+            const x = e.offsetX;
+            const y = e.offsetY;
+            const imageData = ctx.getImageData(x, y, 1, 1);
+            const data = imageData.data;
+            curRGB.r = data[0];
+            curRGB.g = data[1];
+            curRGB.b = data[2];
+            curRGB.a = data[3];
+            const {r, g, b, a} = curRGB;
+            div.style.backgroundColor = `rgba(${r},${g},${b},${a})`;
+            div.innerHTML = `点击复制：rgba(${r},${g},${b},${a})`;
+        });
+        canvas.addEventListener('click', function () {
+            const {r, g, b, a} = curRGB;
+            const input = document.createElement('input');
+            input.value = `rgba(${r},${g},${b},${a})`;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            window.alert('复制成功');
+        });
+
+        fileInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            const image = new Image();
+            image.src = URL.createObjectURL(file);
+            image.onload = function () {
+                ctx.clearRect(0, 0, width, height);
+                const ratio = image.width / image.height;
+                const w = image.width
+                const h = image.height * ratio;
+                ctx.drawImage(image, 0, 0, w, h);
+            };
+        });
+    </script>
+</body>
+
+</html>
