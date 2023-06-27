@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas width="500" height="500" style="border: 2px solid gray">
+        当前浏览器不支持canvas元素，请升级或更换浏览器！
+    </canvas>
+    <script>
+        const canvas = document.querySelector('canvas');
+        const gl = canvas.getContext('webgl', { preserveDrawingBuffer: true }); // webgl绘图环境
+        /**
+         * 1.创建着色器
+         * 2.创建程序
+         * 3.获取数据
+         * 4.绑定数据
+         * 5.绘制
+         */
+
+         // 创建着色器
+        const createShader = (gl, type, sourceCode) => {
+            const shader = gl.createShader(type) // 创建着色器对象
+            gl.shaderSource(shader, sourceCode) // 提供着色器代码
+            gl.compileShader(shader) // 编译 -> 生成着色器
+            const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
+            if (success) return shader
+
+            console.error('shader err >>>', type, gl.getShaderInfoLog(shader))
+            gl.deleteShader(shader);
+        };
+        // 创建着色器程序
+        const createProgram = (gl, vertexShader, fragmentShader) => {
+            const program = gl.createProgram(); // 创建着色器程序
+
+            gl.attachShader(program, vertexShader); // 为着色器程序添加顶点着色器
+            gl.attachShader(program, fragmentShader); // 为着色器程序添加片元着色器
+            gl.linkProgram(program); // 连接顶点着色器和片元着色器
+            gl.useProgram(program); // 使用着色器程序
+            const success = gl.getProgramParameter(program, gl.LINK_STATUS);
+            if (success) {
+                return program;
+            }
+
+            console.error('program err >>>', gl.getProgramInfoLog(program));
+            gl.deleteProgram(program);
+        };
+
+
+        //顶点着色程序
+        const vertexCode = `
+            attribute vec4 a_position;
+            attribute vec4 a_color;
+            varying vec4 v_color;
+            void main () {
+                gl_Position = a_position;
+                gl_PointSize = 24.0;
+                v_color = a_color;
+            }
+        `;
+        // 片元着色程序
+        const fragmentCode = `
+            precision mediump float;
+            varying vec4 v_color;
+            void main () {
+            gl_FragColor = v_color;
+            }
+        `;
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexCode);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentCode);
+        const program = createProgram(gl, vertexShader, fragmentShader);
+        const a_position = gl.getAttribLocation(program, 'a_position');
+        const a_color = gl.getAttribLocation(program, 'a_color');
+        gl.clearColor(1.0, 0.0, 0.0, 0.5);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        canvas.addEventListener('click', handleClick, false);
+        function handleClick (e) {
+            // gl.clear(gl.COLOR_BUFFER_BIT);
+            const rect = event.target.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const u = x / rect.width * 2 - 1;
+            const v = y / rect.height * -2 + 1;
+            gl.vertexAttrib2f(a_position, u, v);
+            gl.vertexAttrib4f(a_color, Math.random(), Math.random(), Math.random(), 1.0);
+            gl.drawArrays(gl.POINTS, 0, 1);
+        }
+
+    </script>
+</body>
+
+</html>
